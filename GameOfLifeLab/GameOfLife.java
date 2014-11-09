@@ -4,6 +4,8 @@ import info.gridworld.actor.Rock;
 import info.gridworld.grid.Grid;
 import info.gridworld.grid.BoundedGrid;
 import info.gridworld.grid.Location;
+import java.util.Scanner;
+import java.util.ArrayList;
 
 /**
  * Game of Life starter code. Demonstrates how to create and populate the game using the GridWorld framework.
@@ -14,17 +16,27 @@ import info.gridworld.grid.Location;
  */
 public class GameOfLife
 {
+    private Scanner in = new Scanner(System.in);
     // the world comprised of the grid that displays the graphics for the game
     private ActorWorld world;
-    
+
     // the game board will have 5 rows and 5 columns
-    private final int ROWS = 5;
-    private final int COLS = 5;
-    
+    private final int ROWS = 24;
+    private final int COLS = 30;
+
     // constants for the location of the three cells initially alive
-    private final int X1 = 0, Y1 = 2;
-    private final int X2 = 2, Y2 = 0;
-    private final int X3 = 2, Y3 = 1;
+    /*
+    private final int X1 = 1, Y1 = 1;
+    private final int X2 = 2, Y2 = 1;
+    private final int X3 = 2, Y3 = 6;
+    private final int X4 = 3, Y4 = 7;
+    private final int X5 = 4, Y5 = 5;
+    private final int X6 = 4, Y6 = 5;
+    private final int X7 = 5, Y7 = 6;
+    private final int X8 = 6, Y8 = 1;
+    private final int X9 = 7, Y9 = 1;
+    private final int X10 = 7, Y10 = 2;
+     */
 
     /**
      * Default constructor for objects of class GameOfLife
@@ -36,18 +48,15 @@ public class GameOfLife
     {
         // create the grid, of the specified size, that contains Actors
         BoundedGrid<Actor> grid = new BoundedGrid<Actor>(ROWS, COLS);
-        
+
         // create a world based on the grid
-        world = new ActorWorld(grid);
-        
-        // populate the game
-        populateGame();
-        
+        this.world = new ActorWorld(grid);        
+
         // display the newly constructed and populated world
         world.show();
-        
+
     }
-    
+
     /**
      * Creates the actors and inserts them into their initial starting positions in the grid
      *
@@ -60,19 +69,45 @@ public class GameOfLife
         // the grid of Actors that maintains the state of the game
         //  (alive cells contains actors; dead cells do not)
         Grid<Actor> grid = world.getGrid();
-        
+        /*
         // create and add rocks (a type of Actor) to the three intial locations
         Rock rock1 = new Rock();
         Location loc1 = new Location(X1, Y1);
         grid.put(loc1, rock1);
-        
+
         Rock rock2 = new Rock();
         Location loc2 = new Location(X2, Y2);
         grid.put(loc2, rock2);
-        
+
         Rock rock3 = new Rock();
         Location loc3 = new Location(X3, Y3);
         grid.put(loc3, rock3);
+
+        Rock rock4 = new Rock();
+        Location loc4 = new Location(X4, Y4);
+        grid.put(loc4, rock4);
+
+        Rock rock5 = new Rock();
+        Location loc5 = new Location(X5, Y5);
+        grid.put(loc5, rock5);
+         */
+        String response;
+        do
+        {
+            Actor newActor = new Actor();
+            int x;
+            int y;            
+            System.out.println("Enter an x-value:");
+            x = in.nextInt();
+            System.out.println("Enter a y-value:");
+            y = in.nextInt();
+            Location newLoc = new Location(x,y);
+            grid.put(newLoc, newActor);
+            world.show();
+            System.out.println("Continue making actors? (y/n)");
+            response = in.next();            
+        }
+        while(response.equals("y"));
     }
 
     /**
@@ -88,14 +123,48 @@ public class GameOfLife
         /** You will need to read the documentation for the World, Grid, and Location classes
          *      in order to implement the Game of Life algorithm and leverage the GridWorld framework.
          */
-        
+
         // create the grid, of the specified size, that contains Actors
         Grid<Actor> grid = world.getGrid();
-        
+
         // insert magic here...
-        
+        for (int row = 0; row < ROWS; row++)
+        {
+            for (int col = 0; col<COLS; col++)
+            {
+                Actor thisCell = this.getActor(row, col); // this cell's actor (can be null)
+                Location thisCellLocation = new Location(row, col); // location of this cell
+                ArrayList occupiedAdjacents = grid.getOccupiedAdjacentLocations(thisCellLocation);
+                int numberOfAdjacents = occupiedAdjacents.size(); // number of live adjacent cells
+                if (thisCell == null) //code for what happens if this cell is dead
+                {                    
+                    if (numberOfAdjacents == 3)
+                    {
+                        Actor newActor = new Actor();
+                        grid.put(thisCellLocation, newActor); //makes a new Actor in this location
+                    }
+                }
+                else // code for what to do if this cell is alive
+                {
+                    if (numberOfAdjacents < 2)
+                    {
+                        grid.remove(thisCellLocation); // kills this cell
+                    }
+                    else if (numberOfAdjacents ==2 || numberOfAdjacents == 3)
+                    {
+                        break; // leave the dang cell alone; it's still alive
+                    }
+                    else // what hapens if the cell has more than three neighbors
+                    {
+                        grid.remove(thisCellLocation); // kills the cell
+                    }
+                }
+            }
+        }
+        world.show(); // refreshes the iteration
+
     }
-    
+
     /**
      * Returns the actor at the specified row and column. Intended to be used for unit testing.
      *
@@ -120,7 +189,7 @@ public class GameOfLife
     {
         return ROWS;
     }
-    
+
     /**
      * Returns the number of columns in the game board
      *
@@ -130,15 +199,20 @@ public class GameOfLife
     {
         return COLS;
     }
-    
-    
+
     /**
      * Creates an instance of this class. Provides convenient execution.
      *
      */
-    public static void main(String[] args)
+    public static void main(String[] args) throws InterruptedException
     {
         GameOfLife game = new GameOfLife();
+        game.populateGame();
+        while (1==1)
+        {
+            Thread.sleep(200);
+            game.createNextGeneration();            
+        }
     }
 
 }

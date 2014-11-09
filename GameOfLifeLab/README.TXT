@@ -33,8 +33,7 @@ The universe of the Game of Life is an infinite two-dimensional orthogonal
     
 MY REQUIREMENTS
 Grid size: 30X24 (max size of a minesweeper board)
-Live cells are pictures of ducklings, dead cells are duck eggs
-Patterns are chosen by the user
+Live cells are actors, dead cells are rocks
 Game runs in an infinite loop, unless all the cells are dead
 New generation every .5 seconds
 Edge cases will wrap around
