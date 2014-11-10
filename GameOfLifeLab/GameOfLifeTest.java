@@ -28,6 +28,7 @@ public class GameOfLifeTest
     @Before
     public void setUp()
     {
+        
     }
 
     /**
