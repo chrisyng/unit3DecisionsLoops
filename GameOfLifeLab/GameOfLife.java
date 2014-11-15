@@ -56,7 +56,7 @@ public class GameOfLife
 
     }
 
-    private void testPopulate()
+    public void testPopulate()
     {
         final int X1 = 1, Y1 = 1;
         final int X2 = 2, Y2 = 1;
@@ -68,6 +68,26 @@ public class GameOfLife
         final int X8 = 6, Y8 = 1;
         final int X9 = 7, Y9 = 1;
         final int X10 = 7, Y10 = 2;
+
+        Rock rock1 = new Rock();
+        Location loc1 = new Location(X1, Y1);
+        grid.put(loc1, rock1);
+
+        Rock rock2 = new Rock();
+        Location loc2 = new Location(X2, Y2);
+        grid.put(loc2, rock2);
+
+        Rock rock3 = new Rock();
+        Location loc3 = new Location(X3, Y3);
+        grid.put(loc3, rock3);
+
+        Rock rock4 = new Rock();
+        Location loc4 = new Location(X4, Y4);
+        grid.put(loc4, rock4);
+
+        Rock rock5 = new Rock();
+        Location loc5 = new Location(X5, Y5);
+        grid.put(loc5, rock5);
     }
 
     /**
@@ -138,24 +158,29 @@ public class GameOfLife
          */
 
         // create the grid, of the specified size, that contains Actors
-        //Grid<Actor> grid = world.getGrid();
+        Grid<Actor> grid = world.getGrid();
 
         // insert magic here...
         BoundedGrid<Actor> refreshedGrid = new BoundedGrid<Actor>(ROWS, COLS);
+
         for (int row = 0; row < ROWS; row++)
         {
             for (int col = 0; col<COLS; col++)
-            {                
-                Actor thisCell = this.getActor(row, col); // this cell's actor (can be null)
+            { 
                 Location thisCellLocation = new Location(row, col); // location of this cell
+                Actor thisCell = grid.get(thisCellLocation);
+                if (thisCell!=null)
+                {
+                    refreshedGrid.put(thisCellLocation, thisCell); // copies over the actor from previous grid to the new grid
+                }
                 ArrayList occupiedAdjacents = grid.getOccupiedAdjacentLocations(thisCellLocation);
                 int numberOfAdjacents = occupiedAdjacents.size(); // number of live adjacent cells
-                if (thisCell == null) //code for what happens if this cell is dead
+                if (thisCell==null)
                 {                    
                     if (numberOfAdjacents == 3)
                     {
                         Actor newActor = new Actor();
-                        refreshedGrid.put(thisCellLocation, newActor); //makes a new Actor in this location
+                        refreshedGrid.put(thisCellLocation, newActor); //makes a new Actor in this location                        
                     }
                 }
                 else // code for what to do if this cell is alive
@@ -174,8 +199,7 @@ public class GameOfLife
                     }
                 }
             }
-        }
-        grid = refreshedGrid;
+        }        
         world.setGrid(refreshedGrid);
         world.show(); // refreshes the iteration
 
@@ -226,7 +250,7 @@ public class GameOfLife
         game.populateGame();
         while (1==1)
         {
-            Thread.sleep(500);
+            Thread.sleep(2000);
             game.createNextGeneration();        
         }
     }
