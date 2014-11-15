@@ -8,11 +8,10 @@ import java.util.Scanner;
 import java.util.ArrayList;
 
 /**
- * Game of Life starter code. Demonstrates how to create and populate the game using the GridWorld framework.
- * Also demonstrates how to provide accessor methods to make the class testable by unit tests.
+ * Game of life Lab.
  * 
- * @author @gcschmit
- * @version 18 July 2014
+ * @author @Christopher Ng
+ * @version 8 November 2014
  */
 public class GameOfLife
 {
@@ -21,8 +20,8 @@ public class GameOfLife
     private ActorWorld world;
 
     // the game board will have 5 rows and 5 columns
-    private final int ROWS = 10;
-    private final int COLS = 10;
+    private final int ROWS = 100;
+    private final int COLS = 100;
     private BoundedGrid<Actor> grid;
 
     // constants for the location of the three cells initially alive
@@ -57,18 +56,19 @@ public class GameOfLife
     }
 
     public void testPopulate()
+    /**
+     * populates the grid with pre-defined values (glider formation) for the test class
+     * 
+     * @pre game has been initialized
+     * @post rock actors are present in glider formation
+     */
     {
         final int X1 = 1, Y1 = 1;
-        final int X2 = 2, Y2 = 1;
-        final int X3 = 2, Y3 = 6;
-        final int X4 = 3, Y4 = 7;
-        final int X5 = 4, Y5 = 5;        
-        final int X6 = 4, Y6 = 5;
-        final int X7 = 5, Y7 = 6;
-        final int X8 = 6, Y8 = 1;
-        final int X9 = 7, Y9 = 1;
-        final int X10 = 7, Y10 = 2;
-
+        final int X2 = 2, Y2 = 2;
+        final int X3 = 3, Y3 = 2;
+        final int X4 = 3, Y4 = 1;
+        final int X5 = 3, Y5 = 0;
+        
         Rock rock1 = new Rock();
         Location loc1 = new Location(X1, Y1);
         grid.put(loc1, rock1);
@@ -101,29 +101,7 @@ public class GameOfLife
     {
         // the grid of Actors that maintains the state of the game
         //  (alive cells contains actors; dead cells do not)
-        //Grid<Actor> grid = world.getGrid();
-        /*
-        // create and add rocks (a type of Actor) to the three intial locations
-        Rock rock1 = new Rock();
-        Location loc1 = new Location(X1, Y1);
-        grid.put(loc1, rock1);
-
-        Rock rock2 = new Rock();
-        Location loc2 = new Location(X2, Y2);
-        grid.put(loc2, rock2);
-
-        Rock rock3 = new Rock();
-        Location loc3 = new Location(X3, Y3);
-        grid.put(loc3, rock3);
-
-        Rock rock4 = new Rock();
-        Location loc4 = new Location(X4, Y4);
-        grid.put(loc4, rock4);
-
-        Rock rock5 = new Rock();
-        Location loc5 = new Location(X5, Y5);
-        grid.put(loc5, rock5);
-         */
+        //Grid<Actor> grid = world.getGrid();        
         String response;
         do
         {
@@ -151,7 +129,7 @@ public class GameOfLife
      * @post    the world has been populated with a new grid containing the next generation
      * 
      */
-    private void createNextGeneration()
+    public void createNextGeneration()
     {
         /** You will need to read the documentation for the World, Grid, and Location classes
          *      in order to implement the Game of Life algorithm and leverage the GridWorld framework.
@@ -168,11 +146,7 @@ public class GameOfLife
             for (int col = 0; col<COLS; col++)
             { 
                 Location thisCellLocation = new Location(row, col); // location of this cell
-                Actor thisCell = grid.get(thisCellLocation);
-                if (thisCell!=null)
-                {
-                    refreshedGrid.put(thisCellLocation, thisCell); // copies over the actor from previous grid to the new grid
-                }
+                Actor thisCell = grid.get(thisCellLocation);                
                 ArrayList occupiedAdjacents = grid.getOccupiedAdjacentLocations(thisCellLocation);
                 int numberOfAdjacents = occupiedAdjacents.size(); // number of live adjacent cells
                 if (thisCell==null)
@@ -191,7 +165,8 @@ public class GameOfLife
                     }
                     else if (numberOfAdjacents ==2 || numberOfAdjacents == 3)
                     {
-                        break; // leave the dang cell alone; it's still alive
+                        Actor newActor = new Actor();
+                        refreshedGrid.put(thisCellLocation, newActor); // leaves it alive in the next Generation
                     }
                     else // what hapens if the cell has more than three neighbors
                     {
@@ -201,6 +176,7 @@ public class GameOfLife
             }
         }        
         world.setGrid(refreshedGrid);
+        this.grid = refreshedGrid;
         world.show(); // refreshes the iteration
 
     }
@@ -250,8 +226,9 @@ public class GameOfLife
         game.populateGame();
         while (1==1)
         {
-            Thread.sleep(2000);
-            game.createNextGeneration();        
+            Thread.sleep(200);
+            game.createNextGeneration();
+            
         }
     }
 

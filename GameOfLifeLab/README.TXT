@@ -32,11 +32,12 @@ The universe of the Game of Life is an infinite two-dimensional orthogonal
     continue to be applied repeatedly to create further generations.
     
 MY REQUIREMENTS
-Grid size: 30X24 (max size of a minesweeper board)
-Live cells are actors, dead cells are rocks
+Grid size: 100X100 (max size of a minesweeper board)
+Live cells are actors, dead cells are null
 Game runs in an infinite loop, unless all the cells are dead
 New generation every .5 seconds
-Edge cases will wrap around
+Edge cases will not wrap around
+starting patterns are user-generated
 
 Nonfunctional Requirements:
 
